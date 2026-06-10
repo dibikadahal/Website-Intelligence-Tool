@@ -6,7 +6,6 @@ import time
 import os
 import uvicorn
 from bs4 import BeautifulSoup
-from google import genai
 
 # load the .env file
 load_dotenv()
@@ -55,19 +54,28 @@ def extract_text(html:str):
 
 
 #-----------Layer 3: AI Summary------------
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def get_ai_summary(text: str):
-    prompt = f"""
-    Based on this website content, write a clear 2-3 sentence
-    summary of what this website is about. Be specific and direct.
-    Content: {text}
-    """
-    response = client.models.generate_content(
-        model="gemini-1.5-flash",
-        contents=prompt
-    )
-    return response.text
+    api_key = os.getenv("GEMINI_API_KEY")
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    
+    payload = {
+        "contents": [{
+            "parts": [{
+                "text": f"Based on this website content, write a clear 2-3 sentence summary of what this website is about. Be specific and direct. Content: {text}"
+            }]
+        }]
+    }
+    
+    response = requests.post(url, json=payload)
+    data = response.json()
+    
+    # Handle errors gracefully
+    if "error" in data:
+        return f"AI summary unavailable: {data['error']['message'][:100]}"
+    
+    return data["candidates"][0]["content"]["parts"][0]["text"]
 
 
 # test endpoint
