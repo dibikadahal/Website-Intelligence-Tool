@@ -35,10 +35,10 @@ def get_network_info(url : str):
 # test endpoint
 @app.get("/")
 def home():
-    return {"message": "Website Intelligence Tool is running!"}"
+    return {"message": "Website Intelligence Tool is running!"}
 
 @app.get("/inspect")
 def inspect(url:str):
     network_info, _ = get_network_info(url)
     return {"network_info": network_info}
-    
+
