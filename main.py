@@ -4,6 +4,8 @@ import requests
 import socket
 import time
 import os
+import uvicorn
+from bs4 import BeautifulSoup
 
 # load the .env file
 load_dotenv()
@@ -43,6 +45,5 @@ def inspect(url:str):
     return {"network_info": network_info}
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
