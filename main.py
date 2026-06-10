@@ -35,17 +35,6 @@ def get_network_info(url : str):
 
     return result, response.text
 
-# test endpoint
-@app.get("/")
-def home():
-    return {"message": "Website Intelligence Tool is running!"}
-
-@app.get("/inspect")
-def inspect(url:str):
-    network_info, _ = get_network_info(url)
-    return {"network_info": network_info}
-
-
 
 # -----------Layer 2: Content Extractor----------
 def extract_text(html:str):
@@ -66,6 +55,42 @@ def extract_text(html:str):
 
 
 #-----------Layer 3: AI Summary------------
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+def get_ai_summary(text:str):
+    prompt=f"""
+    Based on this website content, write a clear 2-3 sentence 
+    summary of what this website is about. Be specific and direct.
+
+    Content:{text}
+    """
+    response = model.generate_content(prompt)
+    return response.text
+
+
+# test endpoint
+@app.get("/")
+def home():
+    return {"message": "Website Intelligence Tool is running!"}
+
+@app.get("/inspect")
+def inspect(url:str):
+    #Layer1: networking
+    network_info, raw_html = get_network_info(url)
+
+    #layer2: extract clean text
+    clean_text=extract_text(raw_html)
+
+    #layer3: AI summary
+    Summary=get_ai_summary(clean_text)
+
+    #combine everything into one response
+    return {
+        **network_info,
+        "clean_text": clean_text,
+        "ai_summary": Summary
+    }
 
 
 if __name__ == "__main__":
