@@ -6,6 +6,7 @@ import time
 import os
 import uvicorn
 from bs4 import BeautifulSoup
+import google.generativeai as genai
 
 # load the .env file
 load_dotenv()
