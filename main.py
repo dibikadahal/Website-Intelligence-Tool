@@ -6,7 +6,7 @@ import time
 import os
 import uvicorn
 from bs4 import BeautifulSoup
-import google.generativeai as genai
+from google import genai
 
 # load the .env file
 load_dotenv()
@@ -55,17 +55,18 @@ def extract_text(html:str):
 
 
 #-----------Layer 3: AI Summary------------
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-def get_ai_summary(text:str):
-    prompt=f"""
-    Based on this website content, write a clear 2-3 sentence 
+def get_ai_summary(text: str):
+    prompt = f"""
+    Based on this website content, write a clear 2-3 sentence
     summary of what this website is about. Be specific and direct.
-
-    Content:{text}
+    Content: {text}
     """
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     return response.text
 
 
