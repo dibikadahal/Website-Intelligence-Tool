@@ -64,7 +64,7 @@ def get_ai_summary(text: str):
     Content: {text}
     """
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         contents=prompt
     )
     return response.text
