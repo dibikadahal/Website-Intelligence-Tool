@@ -44,6 +44,29 @@ def inspect(url:str):
     network_info, _ = get_network_info(url)
     return {"network_info": network_info}
 
+
+
+# -----------Layer 2: Content Extractor----------
+def extract_text(html:str):
+    soup = BeautifulSoup(html, "html.parser")
+    
+    # Remove script and style elements
+    for tag in soup(["script", "style", "nav", "footer"]):
+        tag.decompose()
+    
+    # get clean text
+    text = soup.get_text(separator=" ")
+
+    # remove extra white space
+    clean = " ".join(text.split())
+
+    # limit to 1500 characters
+    return clean[:1500]
+
+
+#-----------Layer 3: AI Summary------------
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 
