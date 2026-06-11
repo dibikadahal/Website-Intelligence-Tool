@@ -84,4 +84,18 @@ if analyze:
 
                 st.divider()
 
-                
+                #-------Raw JSON (Expandable)------------
+                with st.expandable("📦 View Raw JSON Response"):
+                    st.json(data)
+
+            except requests.exceptions.ConnectionError:
+                st.error("Cannot connect to backend. Make sure your FASTAPI is running on port 8000")
+            except Exception as e:
+                st.error(f"Something went wrong: {str(e)}")
+
+
+#-----------Footer----------------
+st.divider()
+st.caption("Built with Fast API + Gemini 2.5 + Streamlit")
+
+
