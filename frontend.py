@@ -1,4 +1,4 @@
-import streamlit.st
+import streamlit as st
 import requests
 
 #---------Page Config setup---------------
@@ -85,7 +85,7 @@ if analyze:
                 st.divider()
 
                 #-------Raw JSON (Expandable)------------
-                with st.expandable("📦 View Raw JSON Response"):
+                with st.expander("📦 View Raw JSON Response"):
                     st.json(data)
 
             except requests.exceptions.ConnectionError:
